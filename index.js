@@ -39,14 +39,14 @@ app.post("/upload", upload.single("image"), (req, res) => {
   res.render("home", { message: "successfully uploaded " });
 });
 
-//List All The Files Present in AWS S3 BUCKET
+//List all The Files Present in AWS S3 BUCKET using method listObjectV2
 app.get("/list", async (req, res) => {
   try {
-    let r = await s3
+    let listObjects = await s3
       .listObjectsV2({ Bucket: "bhaskar-upload-file-node" })
       .promise();
-    let x = r.Contents.map((element) => element.Key);
-    res.render("index", { data: x });
+    let listKeys = listObjects.Contents.map((element) => element.Key);
+    res.render("index", { data: listKeys });
   } catch (err) {
     res.send(err);
   }
@@ -56,10 +56,10 @@ app.get("/list", async (req, res) => {
 app.post("/list/download", async (req, res) => {
   const fileName = req.body.filename;
   try {
-    let x = await s3
+    let getObj = await s3
       .getObject({ Bucket: "bhaskar-upload-file-node", Key: fileName })
       .promise();
-    res.send(x.Body);
+    res.send(getObj.Body);
     console.log(fileName);
   } catch (err) {
     res.send(err);
