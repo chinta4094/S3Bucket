@@ -14,18 +14,18 @@ var accessKeyId = process.env.AWS_ACCESS_KEY;
 var secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
 // initialize the aws.S3 object by storing the accessKey and secretKey in s3 variable
-
 var s3 = new aws.S3({
   accessKeyId,
   secretAccessKey,
 });
 
+// using multer and multer-s3
 var upload = multer({
   storage: multerS3({
     s3: s3,
     bucket: "bhaskar-upload-file-node",
     key: (req, file, cb) => {
-      cb(null, Date.now() + "-" + file.fieldname);
+      cb(null, Date.now() + "-" + file.originalname);
     },
   }),
 });
@@ -47,17 +47,23 @@ app.get("/list", async (req, res) => {
       .promise();
     let x = r.Contents.map((element) => element.Key);
     res.render("index", { data: x });
-  } catch (err) {}
+  } catch (err) {
+    res.send(err);
+  }
 });
 
 // download the file from AWS S3 BUCKET that matches the params fileName
 app.post("/list/download", async (req, res) => {
   const fileName = req.body.filename;
-  let x = await s3
-    .getObject({ Bucket: "bhaskar-upload-file-node", Key: fileName })
-    .promise();
-  res.send(x.Body);
-  console.log(fileName);
+  try {
+    let x = await s3
+      .getObject({ Bucket: "bhaskar-upload-file-node", Key: fileName })
+      .promise();
+    res.send(x.Body);
+    console.log(fileName);
+  } catch (err) {
+    res.send(err);
+  }
 });
 
 app.listen(port, () => console.log("listening on port " + port));
