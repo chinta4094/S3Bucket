@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>View all</title>
+</head>
+<body>
+  <h1>View All Files</h1>
+  <form action='/list/download' method='post'>
+  {{#each data}}
+  
+       <input type='submit' name="filename" value={{this}} /> <br>
+ 
+  
+  {{/each}}
+   </form>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>S3 Demo</title>
+  </head>
+  <body>
+    <p>Upload file to S3</p>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+
+      Upload file
+      <input type="file" name="image" />
+      <input type="submit" />
+
+    </form>
+    {{#if message}}
+      <p>{{message}}</p>
+    {{/if}}
+  </body>
+</html>
